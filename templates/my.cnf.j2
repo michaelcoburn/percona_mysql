@@ -67,7 +67,7 @@ pid-file                                                        = /var/run/mysql
 {{ render_group(percona_mysql_innodb_variables) }}
 ### Replication options
 {{ render_dirgroup(percona_mysql_binlog_dir, percona_mysql_replicationdir_variables) }}{{ render_group(percona_mysql_replication_variables) }}
-{ if percona_mysql_include_pxc_variables %}### PXC options
+{% if percona_mysql_include_pxc_variables %}### PXC options
 {{ render_group(percona_mysql_pxc_variables) }}
 {% endif %}
 ### Logging options
