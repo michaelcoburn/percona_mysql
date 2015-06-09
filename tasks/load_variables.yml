@@ -29,3 +29,6 @@
 
 - name: include numa options
   include_vars: cnf_numa.yml
+
+- name: include PXC options
+  include_vars: cnf_pxc.yml
