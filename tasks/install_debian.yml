@@ -37,6 +37,7 @@
   apt:
     name="{{ percona_mysql_pkg }}"
     state={{ percona_mysql_state|default('present') }}
+    default_release="{{ percona_mysql_release }}"
   environment:
     DEBIAN_FRONTEND: noninteractive
   register: percona_mysql_pkg_check_debian
