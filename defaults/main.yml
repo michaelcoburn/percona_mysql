@@ -53,6 +53,7 @@ percona_mysql_include_ssl_variables: false
 percona_mysql_include_auditlog_variables: false
 percona_mysql_include_jemalloc_variables: false
 percona_mysql_include_numa_variables: false
+percona_mysql_include_pxc_variables: false
 
 # Installation type (set automatically)
 #   - server (default)

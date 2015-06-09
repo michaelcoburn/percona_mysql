@@ -1,0 +1,62 @@
+---
+#---------------------------------------------------------------
+# PXC options
+#---------------------------------------------------------------
+
+percona_mysql_pxc_variables:
+  percona_mysql_wsrep_provider:
+    comment: "Shared object for the Galera Replication. Never should need to change this."
+    option: wsrep_provider
+    variable:
+    value: "/usr/lib64/libgalera_smm.so"
+    include: true
+    dynamic: false
+  percona_mysql_wsrep_cluster_name:
+    comment:
+    option: wsrep_cluster_name
+    variable:
+    value: powerhrg
+    include: true
+    dynamic: false
+  percona_mysql_wsrep_cluster_address:
+    comment: "All nodes in the PXC cluster. TODO Dynamic membership"
+    option: wsrep_cluster_address
+    variable:
+    value: gcomm://ch-pxc1,gcomm://ch-pxc2,gcomm://ch-pxc3,gcomm://cv-pxc1,gcomm://cv-pxc2
+    include: true
+    dynamic: false
+  percona_mysql_wsrep_sst_method:
+    comment:
+    option: wsrep_sst_method
+    variable:
+    value: xtrabackup-v2
+    include: true
+    dynamic: false
+  percona_mysql_wsrep_sst_auth:
+    comment: "User Password combination for SST. TODO vault storage"
+    option: wsrep_sst_auth
+    variable:
+    value: "pxcsstser:BigSecret"
+    include: true
+    dynamic: false
+  percona_mysql_wsrep_node_name:
+    comment:
+    option: wsrep_node_name
+    variable:
+    value:{{ ansible_hostname }}
+    include: true
+    dynamic: false
+  percona_mysql_wsrep_node_address:
+    comment:
+    option: wsrep_node_address
+    variable:
+    value: {{ ansible_bond0.ipv4.address }}
+    include: true
+    dynamic: false
+  percona_mysql_wsrep_provider_options:
+    comment: "List of Provider options. TODO dyanamic-ize"
+    option: wsrep_provider_options
+    variable:
+    value:"gmcast.segment={{ data_centre }};evs.keepalive_period=PT3S;evs.inactive_check_period=PT10S;evs.suspect_timeout=PT30S;evs.inactive_timeout=PT1M;evs.install_timeout=PT1M;evs.send_window=512;evs.user_send_window=256;gcache.size=4G;socket.checksum=2"
+    include: true
+    dynamic: true
