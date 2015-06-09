@@ -43,14 +43,14 @@ percona_mysql_pxc_variables:
     comment:
     option: wsrep_node_name
     variable:
-    value: {{ ansible_hostname }}
+    value: "{{ ansible_hostname }}"
     include: true
     dynamic: false
   percona_mysql_wsrep_node_address:
     comment:
     option: wsrep_node_address
     variable:
-    value: {{ ansible_bond0.ipv4.address }}
+    value: "{{ ansible_default_ipv4.address }}"
     include: true
     dynamic: false
   percona_mysql_wsrep_provider_options:
