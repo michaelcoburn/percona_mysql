@@ -8,7 +8,7 @@ percona_mysql_pxc_variables:
     comment: "Shared object for the Galera Replication. Never should need to change this."
     option: wsrep_provider
     variable:
-    value: "/usr/lib64/libgalera_smm.so"
+    value: "/usr/lib/libgalera_smm.so"
     include: true
     dynamic: false
   percona_mysql_wsrep_cluster_name:
