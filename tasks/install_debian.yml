@@ -42,6 +42,17 @@
     DEBIAN_FRONTEND: noninteractive
   register: percona_mysql_pkg_check_debian
 
+- name: create missing directory for Percona packaging
+  file:
+    path=/usr/lib64
+    state=directory
+- name: fix symlink issue in packaging
+  file:
+    src=/usr/lib/libgalera_smm.so
+    dest=/usr/lib64/libgalera_smm.so
+    owner=root 
+    group=root 
+    state=link
 - name: install additional packages on debian family hosts
   apt:
     name={{ item }}
