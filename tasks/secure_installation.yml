@@ -2,7 +2,7 @@
 - name: copy global client /etc/my.cnf
   sudo: yes
   template:
-    src=client.my.cnf.j2
+    src=my.cnf.j2
     dest=/etc/my.cnf
     owner=root
     group=root

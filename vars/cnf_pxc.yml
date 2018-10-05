@@ -15,7 +15,7 @@ percona_mysql_pxc_variables:
     comment:
     option: wsrep_cluster_name
     variable:
-    value: powerhrg
+    value: percona-cluster
     include: true
     dynamic: false
   percona_mysql_wsrep_cluster_address:
@@ -57,6 +57,6 @@ percona_mysql_pxc_variables:
     comment: "List of Provider options. TODO dyanamic-ize"
     option: wsrep_provider_options
     variable:
-    value: "gmcast.segment={{ data_centre }};evs.keepalive_period=PT3S;evs.inactive_check_period=PT10S;evs.suspect_timeout=PT30S;evs.inactive_timeout=PT1M;evs.install_timeout=PT1M;evs.send_window=512;evs.user_send_window=256;gcache.size=4G;socket.checksum=2"
+    value: "gmcast.segment=1;evs.keepalive_period=PT3S;evs.inactive_check_period=PT10S;evs.suspect_timeout=PT30S;evs.inactive_timeout=PT1M;evs.install_timeout=PT1M;evs.send_window=512;evs.user_send_window=256;gcache.size=4G;socket.checksum=2"
     include: true
     dynamic: true

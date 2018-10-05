@@ -49,20 +49,20 @@ percona_mysql_percona_logging_variables:
     value: 'ON'
     include: true
     dynamic: true
-  percona_mysql_slow_query_log_timestamp_always:
-    comment:
-    option: slow_query_log_timestamp_always
-    variable: slow_query_log_timestamp_always
-    value: 'ON'
-    include: true
-    dynamic: true
-  percona_mysql_slow_query_log_timestamp_precision:
-    comment: "Can be set to second, microsecond"
-    option: slow_query_log_timestamp_precision
-    variable: slow_query_log_timestamp_precision
-    value: second
-    include: true
-    dynamic: true
+#  percona_mysql_slow_query_log_timestamp_always:
+#    comment:
+#    option: slow_query_log_timestamp_always
+#    variable: slow_query_log_timestamp_always
+#    value: 'ON'
+#    include: true
+#    dynamic: true
+#  percona_mysql_slow_query_log_timestamp_precision:
+#    comment: "Can be set to second, microsecond"
+#    option: slow_query_log_timestamp_precision
+#    variable: slow_query_log_timestamp_precision
+#    value: second
+#    include: true
+#    dynamic: true
   percona_mysql_log_slow_verbosity:
     comment: "can be set to microtime, query_plan, innodb, minimal, standard, full, profiling, profiling_use_getrusage"
     option: log_slow_verbosity

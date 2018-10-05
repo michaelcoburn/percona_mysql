@@ -3,7 +3,7 @@
 
 - name: install mysql system files
   command:
-    mysql_install_db --user=mysql --datadir="{{ percona_mysql_data_dir.value }}"
+    mysqld --initialize --user=mysql --datadir="{{ percona_mysql_data_dir.value }}"
     creates="{{ percona_mysql_data_dir.value }}/mysql"
 
 - name: copy plugins my.cnf
@@ -54,8 +54,8 @@
     mysql_upgrade --skip-write-binlog
   when: percona_mysql_check_upgrade and (percona_mysql_pkg_check_redhat.changed or percona_mysql_pkg_check_debian.changed)
 
-- name: ensure percona database exists
-  mysql_db:
-    name=percona
-    state=present
-    login_unix_socket=/var/run/mysqld/mysqld.sock
+#- name: ensure percona database exists
+#  mysql_db:
+#    name=percona
+#    state=present
+#    login_unix_socket=/var/run/mysqld/mysqld.sock

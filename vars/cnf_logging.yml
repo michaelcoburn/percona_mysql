@@ -46,7 +46,7 @@ percona_mysql_logging_variables:
     comment:
     option: long_query_time
     variable: long_query_time
-    value: 2
+    value: 0
     include: true
     dynamic: true
   percona_mysql_log_slow_admin_statements:

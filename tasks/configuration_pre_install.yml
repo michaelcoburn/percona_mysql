@@ -1,10 +1,10 @@
 ---
-- name: install libselinux-python if this is a RedHat derived host OS and selinux is enabled
-  yum:
-    name={{ item }}
-    state=present
-  with_items: percona_mysql_selinux_pkgs
-  when: ansible_os_family == 'RedHat' and ansible_selinux.status == 'enabled'
+#- name: install libselinux-python if this is a RedHat derived host OS and selinux is enabled
+#  yum:
+#    name={{ item }}
+#    state=present
+#  with_items: percona_mysql_selinux_pkgs
+#  when: ansible_os_family == 'RedHat' and ansible_selinux.status == 'enabled'
 
 - name: Fail if TokuDB and Galera options are enabled
   fail: msg='TokuDB isn''t currently supported on Galera based hosts'
