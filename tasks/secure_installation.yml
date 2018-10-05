@@ -1,5 +1,5 @@
 ---
-- name: copy global client /etc/my.cnf
+- name: Install global MySQL configuration file for the server in /etc/my.cnf
   sudo: yes
   template:
     src=my.cnf.j2
