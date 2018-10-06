@@ -7,3 +7,7 @@
   sudo: no
   when: percona_mysql_install == 'master'
 - include: install_logrotate.yml
+- debug:
+    msg:
+      - "Percona Server passwords:"
+      - "root: '{{ percona_mysql_root_password }}'"
