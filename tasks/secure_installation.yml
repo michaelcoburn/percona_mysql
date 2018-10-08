@@ -120,17 +120,10 @@
       - "{{ ansible_hostname }}"
   ignore_errors: true
 
-- name: update root password
-  mysql_user:
-    name=root
-    host=localhost
-    password="{{ percona_mysql_root_password }}"
-    login_unix_socket=/var/run/mysqld/mysqld.sock
-
-- name: Remove the default test database
-  mysql_db:
-    name=test
-    state=absent
-    login_unix_socket=/var/run/mysqld/mysqld.sock
-  ignore_errors: true
+#- name: Remove the default test database
+#  mysql_db:
+#    name=test
+#    state=absent
+#    login_unix_socket=/var/run/mysqld/mysqld.sock
+#  ignore_errors: true
 ...
