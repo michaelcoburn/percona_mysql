@@ -13,28 +13,70 @@
     selevel=s0
 
 - name: Find temporary password from error log on 5.7+ 
-    shell: "echo `grep 'temporary.*root@localhost' /var/log/mysql/mysql_error.log | sed 's/.*root@localhost: //'`"
-    register: mysql_root_password_temp
-    tags: register
-    when: "{{ percona_mysql_server_version }} == 57 or {{ percona_mysql_server_version }} == 80"
+  shell: "grep 'temporary.*root@localhost' /var/log/mysql/mysql_error.log | sed 's/.*root@localhost.* //'"
+  register: mysql_root_password_temp
+  ignore_errors: true
+  tags: register
+  when: "{{ percona_mysql_server_version }} == 57 or {{ percona_mysql_server_version }} == 80"
+
+- debug:
+    var: mysql_root_password_temp.stdout_lines
+  when: mysql_root_password_temp.stdout != ''
 
 - name: Generate local random password that we'll use for root@localhost in MySQL
-    mysql_root_password: "{{ percona_mysql_user_password | default(lookup('password', '/tmp/percona_mysql/' + inventory_hostname + '_percona_mysql_user_password_file length=12 chars=ascii_letters,digits'), true) }}"
-    register: mysql_root_password
-    tags: register
+  command: "echo {{ percona_mysql_root_password | default(lookup('password', '/tmp/percona_mysql/' + inventory_hostname + '_percona_mysql_root_password_file length=12 chars=ascii_letters,digits'), true) }}"
+  register: percona_mysql_root_password
+  ignore_errors: true
+  tags: register
+
+- debug:
+    var: percona_mysql_root_password
+  when: percona_mysql_root_password.stdout != ''
 
 - name: Set new password from temporary password
-  shell: 'mysql -e "ALTER USER user() IDENTIFIED BY ''{{ mysql_root_password }}'';" --connect-expired-password -uroot -p"{{ mysql_root_password_temp.stdout }}"'
+  command: mysql -e 'ALTER USER user() IDENTIFIED BY "{{ percona_mysql_root_password.stdout }}" ' --connect-expired-password -uroot -p{{ mysql_root_password_temp.stdout }}
+  register: mysql_change_root_password
+  ignore_errors: true
+  tags: register
+
+- debug:
+    msg: Current value of mysql_change_root_password
+    var: mysql_change_root_password
+  when: mysql_change_root_password.stdout != ''
+
+- name: Install root client configuration file in /root/.my.cnf
+  sudo: yes
+  template:
+    src=root.my.cnf.j2
+    dest="{{ ansible_env.HOME }}/.my.cnf"
+    owner=root
+    group=root
+    mode=0600
+    seuser=system_u
+    serole=object_r
+    setype=mysqld_etc_t
+    selevel=s0
+
+- name: Generate local random password that we'll use for {{ percona_mysql_user_name }} @localhost in MySQL
+  command: "echo {{ percona_mysql_user_password | default(lookup('password', '/tmp/percona_mysql/' + inventory_hostname + '_percona_mysql_user_password_file length=12 chars=ascii_letters,digits'), true) }}"
+  register: percona_mysql_user_password
+  ignore_errors: true
+  tags: register
+
+- debug:
+    var: percona_mysql_user_password
+  when: percona_mysql_user_password.stdout != ''
 
 - name: Create the local Percona MySQL User
   mysql_user:
     name={{ percona_mysql_user_name }}
     host={{ percona_mysql_user_host }}
-    password="{{ percona_mysql_user_password|default(lookup('file', '/tmp/percona_mysql/' + inventory_hostname + '_percona_mysql_user_password_file'), true) }}"
-    priv={{ percona_mysql_user_priv|default("*.*:ALL,GRANT") }}
+    password={{ percona_mysql_user_password | default(lookup('file', '/tmp/percona_mysql/' + inventory_hostname + '_percona_mysql_user_password_file'), true) }}
+    priv={{ percona_mysql_user_priv | default("*.*:ALL,GRANT") }}
     login_unix_socket=/var/run/mysqld/mysqld.sock
+  when: ( ansible_env.HOME  != '/root')
 
-- name: Install client configuration file .my.cnf in home_dir / mysql_installation_dir
+- name: Install client configuration file .my.cnf in mysql_home_dir / mysql_installation_dir
   template:
     src=user.my.cnf.j2
     dest="{{ percona_mysql_home_dir }}/{{ percona_mysql_installation_user }}/.my.cnf"
@@ -71,21 +113,8 @@
   mysql_user:
     name=root
     host=localhost
-    password="{{ percona_mysql_root_password|default(lookup('password', '/tmp/percona_mysql/' + inventory_hostname + '_percona_mysql_root_password_file length=12 chars=ascii_letters,digits'), true) }}"
+    password="{{ percona_mysql_root_password | default(lookup('password', '/tmp/percona_mysql/' + inventory_hostname + '_percona_mysql_root_password_file length=12 chars=ascii_letters,digits'), true) }}"
     login_unix_socket=/var/run/mysqld/mysqld.sock
-
-- name: Install Users' client configuration file .my.cnf
-  sudo: yes
-  template:
-    src=root.my.cnf.j2
-    dest="{{ ansible_env.HOME }}/.my.cnf"
-    owner=root
-    group=root
-    mode=0600
-    seuser=system_u
-    serole=object_r
-    setype=mysqld_etc_t
-    selevel=s0
 
 - name: Remove the default test database
   mysql_db:
