@@ -33,11 +33,19 @@
     var: percona_mysql_root_password
   when: percona_mysql_root_password.stdout != ''
 
-- name: Set new password from temporary password
+- name: Set new root password using SET PASSWORD syntax for PS55/56
+  command: mysql -e 'SET PASSWORD = PASSWORD('"{{ percona_mysql_root_password.stdout }}"') ' -uroot -p'' }}
+  register: mysql_change_root_password
+  ignore_errors: true
+  tags: register
+  when: "{{ percona_mysql_server_version }} == 55 or {{ percona_mysql_server_version }} == 56"
+
+- name: Set new root password using ALTER USER syntax for PS57+
   command: mysql -e 'ALTER USER user() IDENTIFIED BY "{{ percona_mysql_root_password.stdout }}" ' --connect-expired-password -uroot -p{{ mysql_root_password_temp.stdout }}
   register: mysql_change_root_password
   ignore_errors: true
   tags: register
+  when: "{{ percona_mysql_server_version }} == 57 or {{ percona_mysql_server_version }} == 80"
 
 - debug:
     msg: Current value of mysql_change_root_password
@@ -116,7 +124,7 @@
   mysql_user:
     name=root
     host=localhost
-    password="{{ percona_mysql_root_password | default(lookup('password', '/tmp/percona_mysql/' + inventory_hostname + '_percona_mysql_root_password_file length=12 chars=ascii_letters,digits'), true) }}"
+    password="{{ percona_mysql_root_password }}"
     login_unix_socket=/var/run/mysqld/mysqld.sock
 
 - name: Remove the default test database
