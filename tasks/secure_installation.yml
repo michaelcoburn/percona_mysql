@@ -87,6 +87,7 @@
     serole=object_r
     setype=mysqld_etc_t
     selevel=s0
+  when: (ansble_env.USER != 'root')
 
 - name: remove anonymous users
   mysql_user:
@@ -97,6 +98,7 @@
   with_items:
       - localhost
       - "{{ ansible_hostname }}"
+  ignore_errors: true
 
 - name: remove superfluous root users
   mysql_user:
@@ -108,6 +110,7 @@
       - 127.0.0.1
       - ::1
       - "{{ ansible_hostname }}"
+  ignore_errors: true
 
 - name: update root password
   mysql_user:
@@ -121,3 +124,4 @@
     name=test
     state=absent
     login_unix_socket=/var/run/mysqld/mysqld.sock
+...
