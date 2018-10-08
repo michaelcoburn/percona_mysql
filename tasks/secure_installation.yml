@@ -124,4 +124,5 @@
     name=test
     state=absent
     login_unix_socket=/var/run/mysqld/mysqld.sock
+  ignore_errors: true
 ...
