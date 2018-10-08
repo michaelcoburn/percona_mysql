@@ -87,7 +87,7 @@
     serole=object_r
     setype=mysqld_etc_t
     selevel=s0
-  when: (ansble_env.USER != 'root')
+  when: (ansible_env.USER != 'root')
 
 - name: remove anonymous users
   mysql_user:
